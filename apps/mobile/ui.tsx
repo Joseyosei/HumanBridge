@@ -1,0 +1,11 @@
+import React,{createContext,useContext} from 'react';
+import {View,Text,Pressable,StyleSheet,ViewStyle} from 'react-native';
+export const light={bg:'#F7F4EF',card:'#FFFFFF',ink:'#151A32',muted:'#56586B',accent:'#5944B5',soft:'#EAE4FA',line:'#E1DCE8',hero:'#242044'};
+export const dark={bg:'#17192B',card:'#24273C',ink:'#F7F4FF',muted:'#C2BED3',accent:'#C5B7FF',soft:'#383052',line:'#49455C',hero:'#352A60'};
+export const Theme=createContext(light);
+export const useTheme=()=>useContext(Theme);
+export function Copy({children,kind='body'}:{children:React.ReactNode,kind?:'body'|'title'|'label'|'hero'}){const p=useTheme();return <Text style={[styles[kind],{color:kind==='body'?p.muted:kind==='label'?p.accent:p.ink}]}>{children}</Text>}
+export function Card({children,style}:{children:React.ReactNode,style?:ViewStyle}){const p=useTheme();return <View style={[styles.card,{backgroundColor:p.card,borderColor:p.line},style]}>{children}</View>}
+export function Button({label,onPress,selected=false,disabled=false,primary=false}:{label:string,onPress:()=>void,selected?:boolean,disabled?:boolean,primary?:boolean}){const p=useTheme();return <Pressable accessibilityRole="button" accessibilityState={{selected,disabled}} disabled={disabled} onPress={onPress} style={({pressed})=>[styles.button,{backgroundColor:primary||selected?p.accent:p.soft,opacity:disabled?.45:pressed?.75:1}]}><Text style={{fontSize:15,fontWeight:'700',color:primary||selected?(p===dark?'#17192B':'white'):p.ink,textAlign:'center'}}>{label}</Text></Pressable>}
+export function Meter({value}:{value:number}){const p=useTheme();return <View accessibilityRole="progressbar" accessibilityValue={{min:0,max:100,now:Math.round(value*100)}} style={{height:8,borderRadius:8,backgroundColor:p.soft,overflow:'hidden'}}><View style={{height:8,borderRadius:8,backgroundColor:p.accent,width:`${Math.max(0,Math.min(1,value))*100}%`}}/></View>}
+const styles=StyleSheet.create({body:{fontSize:16,lineHeight:24},title:{fontSize:21,fontWeight:'700',lineHeight:28},label:{fontSize:12,fontWeight:'800',letterSpacing:1.5},hero:{fontSize:36,fontWeight:'800',lineHeight:43},card:{borderWidth:1,borderRadius:24,padding:18,gap:12},button:{minHeight:48,padding:13,borderRadius:14,justifyContent:'center'}});
